@@ -1,0 +1,25 @@
+services:
+  risepyminder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: risepyminder
+    environment:
+      - PYTHONUNBUFFERED=1
+      # Set your timezone (IANA timezone identifier)
+      # Examples: UTC, America/Argentina/Buenos_Aires, America/New_York, Europe/London
+      - TIMEZONE=UTC
+    env_file:
+      - .env
+    volumes:
+      # Keep logs persistent
+      - ./logs:/app/logs
+      # Allow schedule to be updatable without rebuilding
+      - ./data:/app/data
+    restart: unless-stopped
+    networks:
+      - risepyminder-network
+
+networks:
+  risepyminder-network:
+    driver: bridge

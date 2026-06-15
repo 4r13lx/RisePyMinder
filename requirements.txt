@@ -1,0 +1,17 @@
+# RisePyMinder - Dependencies
+
+# Multi-platform notifications
+apprise>=1.8.0
+
+# Environment variables handling
+python-dotenv>=1.0.0
+
+# Timezone handling
+pytz>=2024.1
+
+# Development (optional)
+pytest>=7.0.0
+pytest-cov>=4.0.0
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.0.0

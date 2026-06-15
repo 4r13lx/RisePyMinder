@@ -1,0 +1,53 @@
+# Ignore Python virtual environments and common build artifacts
+venv/
+.venv/
+env/
+ENV/
+pyenv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ignore Python bytecode and cache directories
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+
+# Ignore configuration and IDE files
+.env
+*.local
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ignore docker files
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Ignore logs
+logs/
+
+# Ignore project files
+pyproject.toml
+Makefile
+
+# Ignore tests and documentation
+tests/
+docs/
+CONTRIBUTING.md
+CHANGELOG.md
+LICENSE
+README.md
+EXAMPLES.md
