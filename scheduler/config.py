@@ -62,6 +62,9 @@ class Config:
     # Time rounding in minutes for schedule matching
     TIME_ROUNDING_MINUTES: int = int(os.environ.get("TIME_ROUNDING_MINUTES", "60"))
 
+    # Interval in seconds for how often the scheduler checks for upcoming events
+    INTERVAL_SECONDS: int = int(os.environ.get("INTERVAL_SECONDS", "3600"))
+
 
 def get_env_var(key: str, default: Optional[str] = None) -> Optional[str]:
     """Get environment variable with error handling"""

@@ -40,6 +40,9 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Default timezone (can be overridden in docker-compose.yml or with -e flag)
 ENV TIMEZONE=UTC
 
+# Default interval for scheduling (can be overridden in docker-compose.yml or with -e flag)
+ENV INTERVAL_SECONDS=3600
+
 # Copy application code
 COPY --from=builder /opt/venv /opt/venv
 
@@ -62,5 +65,5 @@ RUN chown -R appuser:appgroup /app
 # Switch to the non-root user
 USER appuser
 
-# Run scheduler every 5 minutes
-CMD ["sh", "-c", "while true; do python main.py; sleep 300; done"]
+# Run scheduler every hour (or as defined by INTERVAL_SECONDS)
+CMD ["sh", "-c", "while true; do python main.py; sleep ${INTERVAL_SECONDS}; done"]

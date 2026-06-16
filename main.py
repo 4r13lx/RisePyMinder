@@ -33,6 +33,7 @@ def main():
         logger.info(f"│ 🌐 Timezone:     {str(Config.TIMEZONE_STR):<36} ")
         logger.info(f"│ ⏱️  Rounding:     {str(f'{Config.TIME_ROUNDING_MINUTES} min'):<36} ")
         logger.info(f"│ 🕒 Current time: {str(MessageScheduler().get_current_time()):<36} ")
+        logger.info(f"│ 🕒 Interval:     {str(f'{Config.INTERVAL_SECONDS} sec'):<36} ")
         logger.info("└─────────────────────────────────────────────────────────")
         
         # Create scheduler instance
