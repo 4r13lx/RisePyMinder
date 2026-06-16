@@ -24,7 +24,7 @@ Scheduled notification system for general purposes (originally created for educa
 ### 1. Clone the repository
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/4r13lx/RisePyMinder.git
 cd RisePyMinder
 ```
 
@@ -63,7 +63,7 @@ Recipients are configured through environment variables. The system supports any
 ```bash
 # Timezone (IANA timezone identifier)
 # Examples: UTC, America/New_York, America/Argentina/Buenos_Aires, Europe/London, Asia/Tokyo
-TIMEZONE=America/Argentina/Buenos_Aires
+TIME_ZONE=America/Argentina/Buenos_Aires
 
 # Notification recipients (comma-separated URLs)
 RECIPIENTS=tgram://bot_token/chat_id,discord://webhook_id/webhook_token
@@ -165,13 +165,13 @@ Edit `docker-compose.yml` and update the `TIMEZONE` environment variable:
 
 ```yaml
 environment:
-  - TIMEZONE=America/Argentina/Buenos_Aires
+  - TIME_ZONE=America/Argentina/Buenos_Aires
 ```
 
 Or override it when running:
 
 ```bash
-docker-compose run -e TIMEZONE=America/New_York risepyminder
+docker-compose run -e TIME_ZONE=America/New_York risepyminder
 ```
 
 Manual Docker execution:
@@ -180,7 +180,7 @@ Manual Docker execution:
 docker build -t risepyminder:latest .
 docker run -d \
   --env-file .env \
-  -e TIMEZONE=UTC \
+  -e TIME_ZONE=UTC \
   -v ./logs:/app/logs \
   -v ./data:/app/data \
   risepyminder:latest
