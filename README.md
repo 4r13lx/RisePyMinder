@@ -1,3 +1,5 @@
+[![Scheduled Script Execution](https://github.com/4r13lx/RisePyMinder/actions/workflows/scheduled.yml/badge.svg)](https://github.com/4r13lx/RisePyMinder/actions/workflows/scheduled.yml)
+
 # RisePyMinder
 
 Scheduled notification system for general purposes (originally created for educational institutions). Sends automatic reminders through multiple channels (Email, Telegram, Discord, Slack, WhatsApp, etc.) based on a JSON schedule.
