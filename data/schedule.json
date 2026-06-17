@@ -1,19 +1,19 @@
 [
   {
-    "date": "16-06-2026",
-    "time": "09:00",
+    "date": "18-06-2026",
+    "time": "12:00",
     "message": "Good morning. I remind you that today there is Math class at 10:00.",
     "audience": "students"
   },
   {
-    "date": "16-06-2026",
-    "time": "16:00",
+    "date": "18-06-2026",
+    "time": "18:00",
     "message": "Reminder: History assignment is due today at 18:00.",
     "audience": "students"
   },
   {
-    "date": "17-06-2026",
-    "time": "09:00",
+    "date": "19-06-2026",
+    "time": "12:00",
     "message": "Good morning teachers. Department meeting at 15:00.",
     "audience": "teachers"
   }
