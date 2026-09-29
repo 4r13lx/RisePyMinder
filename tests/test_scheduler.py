@@ -1,6 +1,6 @@
 """Tests for scheduler module"""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -58,6 +58,49 @@ class TestMessageScheduler:
         # Cases that don't match
         assert scheduler._match_schedule(reminder, "14-06-2026", "10:05") is False
         assert scheduler._match_schedule(reminder, "15-06-2026", "10:00") is False
+
+    def test_match_schedule_pairs_date_and_time_arrays_by_position(self):
+        scheduler = MessageScheduler()
+        current_year = datetime.now(timezone.utc).year
+        reminder = {
+            "date": ["20-10", "21-10", "22-10"],
+            "time": ["10:00", "11:00", "12:00"],
+        }
+
+        assert (
+            scheduler._match_schedule(reminder, f"21-10-{current_year}", "11:00")
+            is True
+        )
+        assert (
+            scheduler._match_schedule(reminder, f"21-10-{current_year}", "10:00")
+            is False
+        )
+
+    def test_match_schedule_reuses_scalar_date_or_time(self):
+        scheduler = MessageScheduler()
+
+        assert (
+            scheduler._match_schedule(
+                {"date": "21-10", "time": ["10:00", "11:00"]},
+                "21-10-2026",
+                "11:00",
+            )
+            is True
+        )
+        assert (
+            scheduler._match_schedule(
+                {"date": ["20-10", "21-10"], "time": "11:00"},
+                "21-10-2026",
+                "11:00",
+            )
+            is True
+        )
+
+    def test_match_schedule_rejects_different_array_lengths(self):
+        scheduler = MessageScheduler()
+        reminder = {"date": ["20-10", "21-10"], "time": ["10:00", "11:00", "12:00"]}
+
+        assert scheduler._match_schedule(reminder, "21-10-2026", "11:00") is False
 
     def test_load_schedule_not_exists(self):
         """Test that load_schedule handles file not found"""

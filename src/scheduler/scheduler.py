@@ -132,10 +132,33 @@ class MessageScheduler:
         Returns:
             True if matches, False otherwise
         """
-        return (
-            reminder.get("date") == current_date
-            and reminder.get("time") == current_time
+        dates = reminder.get("date")
+        times = reminder.get("time")
+        dates = dates if isinstance(dates, list) else [dates]
+        times = times if isinstance(times, list) else [times]
+
+        if len(dates) != len(times):
+            if len(dates) == 1:
+                dates = dates * len(times)
+            elif len(times) == 1:
+                times = times * len(dates)
+            else:
+                return False
+
+        return any(
+            scheduled_time == current_time
+            and self._date_matches(scheduled_date, current_date)
+            for scheduled_date, scheduled_time in zip(dates, times)
         )
+
+    @staticmethod
+    def _date_matches(scheduled_date: object, current_date: str) -> bool:
+        if not isinstance(scheduled_date, str):
+            return False
+        if len(scheduled_date.split("-")) == 2:
+            current_year = current_date.rsplit("-", 1)[-1]
+            scheduled_date = f"{scheduled_date}-{current_year}"
+        return scheduled_date == current_date
 
     def _send_message(self, reminder: Dict) -> bool:
         """

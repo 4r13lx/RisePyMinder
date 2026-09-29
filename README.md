@@ -134,13 +134,20 @@ The `data/schedule.json` file defines messages to send:
     "time": "09:00",
     "message": "Send one message to both channels",
     "recipients": ["math", "staff"]
+  },
+  {
+    "date": ["20-10", "21-10", "22-10"],
+    "time": ["10:00", "11:00", "12:00"],
+    "message": "Send this reminder on each date and time",
+    "recipients": "staff"
   }
 ]
 ```
 
 **Format:**
-- `date`: DD-MM-YYYY format
-- `time`: HH:MM format, matched according to `TIME_ROUNDING_MINUTES` (60 minutes by default)
+- `date`: `DD-MM` or `DD-MM-YYYY`; when the year is omitted, the current year is used. A list of dates is supported.
+- `time`: `HH:MM`, matched according to `TIME_ROUNDING_MINUTES` (60 minutes by default). A list of times is supported.
+- When both `date` and `time` are lists, values are paired by position. A scalar date or time is reused for each value in the other list. Lists with different lengths are ignored unless one side contains a single value.
 - `message`: Message text
 - `recipient`: Optional single name; maps to an environment variable named `RECIPIENT_<NAME>`
 - `recipients`: Optional list of names for sending the same message to multiple selected destinations
