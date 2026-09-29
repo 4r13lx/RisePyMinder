@@ -53,13 +53,15 @@ RECIPIENTS=tgram://BOT_TOKEN/CHAT_ID,discord://WEBHOOK_ID/WEBHOOK_TOKEN,mailtos:
 ]
 ```
 
-## Example 4: Educational Institution Setup
+## Example 4: Different messages for independent recipients
 
 ```bash
 # .env
-TIMEZONE=America/Argentina/Buenos_Aires
-# Send notifications to all: students, teachers, and parents
-RECIPIENTS=tgram://STUDENT_BOT/STUDENT_CHAT,discord://TEACHER_WEBHOOK/TOKEN,mailtos://parents@school.edu.ar
+TIME_ZONE=America/Argentina/Buenos_Aires
+# Named destinations can represent any channel/group, not predefined roles.
+RECIPIENT_MATH=discord://MATH_CHANNEL_WEBHOOK_ID/MATH_CHANNEL_WEBHOOK_TOKEN
+RECIPIENT_HISTORY=discord://HISTORY_CHANNEL_WEBHOOK_ID/HISTORY_CHANNEL_WEBHOOK_TOKEN
+RECIPIENT_STAFF=discord://STAFF_CHANNEL_WEBHOOK_ID/STAFF_CHANNEL_WEBHOOK_TOKEN
 ```
 
 **schedule.json:**
@@ -68,20 +70,31 @@ RECIPIENTS=tgram://STUDENT_BOT/STUDENT_CHAT,discord://TEACHER_WEBHOOK/TOKEN,mail
   {
     "date": "17-06-2026",
     "time": "08:00",
-    "message": "Classes start in 1 hour"
+    "message": "Math class starts in 1 hour",
+    "recipient": "math"
   },
   {
     "date": "17-06-2026",
-    "time": "12:30",
-    "message": "Lunch break starts"
+    "time": "08:00",
+    "message": "History materials are ready",
+    "recipient": "history"
   },
   {
     "date": "17-06-2026",
     "time": "17:00",
-    "message": "Classes finished. See you tomorrow!"
+    "message": "Staff meeting reminder",
+    "recipient": "staff"
+  },
+  {
+    "date": "18-06-2026",
+    "time": "09:00",
+    "message": "Shared announcement",
+    "recipients": ["math", "history"]
   }
 ]
 ```
+
+Each `recipient` name resolves to `RECIPIENT_<NAME>` (case-insensitive). `recipients` can select multiple names. Each Discord webhook routes to its own channel. Unnamed schedule entries continue to use the legacy `RECIPIENTS` list.
 
 ## Example 5: Different Timezones
 
@@ -123,7 +136,7 @@ services:
     container_name: risepyminder
     environment:
       - PYTHONUNBUFFERED=1
-      - TIMEZONE=America/Argentina/Buenos_Aires
+      - TIME_ZONE=America/Argentina/Buenos_Aires
     env_file:
       - .env
     volumes:
@@ -179,9 +192,12 @@ For more formats, see: https://github.com/caronc/apprise/wiki
 # See: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 TIMEZONE=UTC
 
-# Notification recipients - comma-separated URLs
-# Examples: Telegram, Discord, Email, Slack, WhatsApp, Teams, etc.
+# Legacy destinations used only for schedule entries without recipient/recipients
 RECIPIENTS=
+
+# Named destinations used as recipient values in schedule.json
+RECIPIENT_MATH=discord://WEBHOOK_ID/WEBHOOK_TOKEN
+RECIPIENT_STAFF=tgram://BOT_TOKEN/CHAT_ID
 
 # Optional: Custom log level
 # Supported: DEBUG, INFO, WARNING, ERROR, CRITICAL

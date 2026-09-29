@@ -8,8 +8,9 @@ Scheduled notification system for general purposes (originally created for educa
 
 - ✅ Send notifications through multiple channels (Telegram, Discord, Email, Slack, WhatsApp, etc.)
 - ✅ Flexible schedule based on JSON
-- ✅ Configurable recipients via environment variables (comma-separated URLs)
-- ✅ Automatic hour rounding (every 5 minutes)
+- ✅ Named recipients per message, each mapped to independent channels/services
+- ✅ Backward-compatible default recipients via environment variables
+- ✅ Configurable schedule-time rounding (60 minutes by default)
 - ✅ Configurable timezone (supports IANA timezone identifiers)
 - ✅ Professional logging
 - ✅ Modular and scalable structure
@@ -56,7 +57,7 @@ cp .env.example .env
 
 ### Environment Variables
 
-Recipients are configured through environment variables. The system supports any notification service compatible with Apprise.
+Destinations are configured through environment variables. The system supports any notification service compatible with Apprise. A schedule entry can target one or more named recipients, independently of whether they represent students, teachers, or any other group.
 
 **Basic Configuration:**
 
@@ -65,9 +66,16 @@ Recipients are configured through environment variables. The system supports any
 # Examples: UTC, America/New_York, America/Argentina/Buenos_Aires, Europe/London, Asia/Tokyo
 TIME_ZONE=America/Argentina/Buenos_Aires
 
-# Notification recipients (comma-separated URLs)
+# Legacy destinations (used when a schedule entry has no recipient field)
 RECIPIENTS=tgram://bot_token/chat_id,discord://webhook_id/webhook_token
+
+# Named destinations: use these names in schedule.json as "recipient".
+# For Discord, each webhook URL is associated with its own channel.
+RECIPIENT_MATH=discord://math_webhook_id/math_webhook_token
+RECIPIENT_STAFF=discord://staff_webhook_id/staff_webhook_token
 ```
+
+Recipient names are case-insensitive and may contain letters, numbers, and underscores. For example, `recipient: "math"` resolves to `RECIPIENT_MATH`. An explicitly selected but undefined name fails rather than broadcasting to unrelated destinations. `RECIPIENTS` remains available for older schedule entries without `recipient` or `recipients`.
 
 **Notification URL Examples:**
 
@@ -112,15 +120,32 @@ The `data/schedule.json` file defines messages to send:
   {
     "date": "15-06-2026",
     "time": "14:30",
-    "message": "Another message"
+    "message": "Another message",
+    "recipient": "staff"
+  },
+  {
+    "date": "15-06-2026",
+    "time": "14:30",
+    "message": "Math-specific message",
+    "recipient": "math"
+  },
+  {
+    "date": "16-06-2026",
+    "time": "09:00",
+    "message": "Send one message to both channels",
+    "recipients": ["math", "staff"]
   }
 ]
 ```
 
 **Format:**
 - `date`: DD-MM-YYYY format
-- `time`: HH:MM format (rounded every 5 minutes)
+- `time`: HH:MM format, matched according to `TIME_ROUNDING_MINUTES` (60 minutes by default)
 - `message`: Message text
+- `recipient`: Optional single name; maps to an environment variable named `RECIPIENT_<NAME>`
+- `recipients`: Optional list of names for sending the same message to multiple selected destinations
+
+Entries without either recipient field continue to use the legacy `RECIPIENTS` destinations. Several entries may use the same date and time to send different messages to different channels.
 
 ## Usage
 
@@ -251,12 +276,14 @@ To change logging level, edit `scheduler/config.py`.
 
 ## Troubleshooting
 
-### Error: "RECIPIENTS environment variable not configured"
+### A named recipient is not configured
 
 Check that:
-1. `RECIPIENTS` environment variable exists in `.env`
-2. URLs are properly formatted and separated by commas
-3. You reloaded `.env` after editing
+1. The schedule name exactly matches a configured `RECIPIENT_<NAME>` variable (names are case-insensitive).
+2. The variable contains properly formatted Apprise URLs, separated by commas if there is more than one.
+3. You reloaded `.env` after editing.
+
+For entries without a named recipient, configure the legacy `RECIPIENTS` variable.
 
 ### Error: "Unknown timezone"
 

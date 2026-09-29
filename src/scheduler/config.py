@@ -2,8 +2,8 @@
 Centralized project configuration
 """
 
-import os
 import logging
+import os
 from pathlib import Path
 from typing import Optional
 
@@ -11,7 +11,7 @@ from typing import Optional
 logging.basicConfig(
     level=logging.INFO,
     format="[%(levelname)s] %(asctime)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 logger = logging.getLogger(__name__)
 
@@ -19,8 +19,10 @@ logger = logging.getLogger(__name__)
 try:
     from dotenv import load_dotenv
 except ImportError:
+
     def load_dotenv(*args, **kwargs):
         logger.warning("python-dotenv not installed; skipping .env loading")
+
 
 # Define base paths for dotenv
 _BASE_DIR_ = Path(__file__).resolve().parent.parent
@@ -35,6 +37,7 @@ if _ENV_FILE_.exists():
 else:
     logger.warning(f"No .env file found at: {_ENV_FILE_}")
 
+
 # Configuration class
 class Config:
     """Application configuration"""
@@ -43,22 +46,22 @@ class Config:
     BASE_DIR = Path(__file__).resolve().parent.parent
     DATA_DIR = BASE_DIR / "data"
     LOGS_DIR = BASE_DIR / "logs"
-    
+
     # Files
     SCHEDULE_PATH = DATA_DIR / "schedule.json"
     ENV_FILE = BASE_DIR / ".env"
-    
+
     # Create directories if they don't exist
     DATA_DIR.mkdir(exist_ok=True)
     LOGS_DIR.mkdir(exist_ok=True)
-    
+
     # Notification configuration
     NOTIFICATION_TITLE: str = "Virtual Assistant Reminder"
     NOTIFICATION_TYPE: str = "INFO"
-    
+
     # Timezone - Load from environment or default to UTC
-    TIMEZONE_STR: str = os.environ.get("TIME_ZONE")
-    
+    TIMEZONE_STR: str = os.environ.get("TIME_ZONE", "UTC")
+
     # Time rounding in minutes for schedule matching
     TIME_ROUNDING_MINUTES: int = int(os.environ.get("TIME_ROUNDING_MINUTES", "60"))
 
